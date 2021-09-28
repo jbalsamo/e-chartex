@@ -34,7 +34,8 @@ myChart.setOption({
     data: ['1st Dose','2nd Dose']
   },
   xAxis: {
-    data: []
+    data: [],
+    nameRotate: 90,
   },
   yAxis: {},
   series: [
@@ -74,7 +75,8 @@ $.get('https://data.cdc.gov/resource/saz5-9hgg.json').done(function(data) {
   // Fill in the data
   myChart.setOption({
     xAxis: {
-      data: chart_data.categories
+      data: chart_data.categories,
+      nameRotate: 60
     },
     series: [
       {
