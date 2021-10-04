@@ -25,6 +25,9 @@
       var vlSpec = {
         $schema: 'https://vega.github.io/schema/vega-lite/v5.json',
         data: {'url':'https://data.cdc.gov/resource/saz5-9hgg.json'},
+        transform: [
+          { filter: "datum.week_of_allocations == '2021-06-21T00:00:00.000'" }
+        ],
         mark: 'bar',
         encoding: {
           x: {
@@ -32,9 +35,9 @@
             'title': 'State'
           },
           y: {
-            aggregate: 'sum',
             field: '_1st_dose_allocations',
-            'title': 'Dose Allocations'
+            'title': 'Dose Allocations',
+            'type': 'quantitative'
           }
         }
       };
