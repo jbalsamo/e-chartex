@@ -24,23 +24,39 @@
       // Assign the specification to a local variable vlSpec.
       var vlSpec = {
         $schema: 'https://vega.github.io/schema/vega-lite/v5.json',
-        data: {'url':'https://data.cdc.gov/resource/saz5-9hgg.json'},
+        data: {'url':'https://data.cdc.gov/resource/9bhg-hcku.json'},
         transform: [
-          { filter: "datum.week_of_allocations == '2021-06-21T00:00:00.000'" }
+          { filter: "datum.state != 'United States'" }
         ],
+        "width": {"step": 21},
         mark: 'bar',
         encoding: {
+          "column": {
+            "field": "age_group", "type": "ordinal", "spacing": 10,
+            "header": {"orient": "bottom"},
+
+          },
           x: {
-            'field': 'jurisdiction',
-            'title': 'State'
+            'field': 'sex',
+            'axis': null
+          },
+          "color": {
+            "field": "sex",
+            "scale": {"range": ["#675193", "#0000ff", "#ff0080"]}
           },
           y: {
-            field: '_1st_dose_allocations',
-            'title': 'Dose Allocations',
-            'type': 'quantitative'
+            aggregate: 'sum',
+            field: 'covid_19_deaths',
+            'title': 'Covid Deaths',
+            'type': 'quantitative',
+            "axis": {"grid": false}
           }
-        }
-      };
+        },
+      "config": {
+        "view": {"stroke": "transparent"},
+        "axis": {"domainWidth": 3}
+      }
+    };
 
       // Embed the visualization in the container with id `vis`
       vegaEmbed('#vis', vlSpec);
