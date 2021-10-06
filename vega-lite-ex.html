@@ -16,7 +16,7 @@
     </style>
   </head>
   <body>
-    <h1>Template for Embedding Vega-Lite Visualization</h1>
+    <h1>Covid-19 Deaths by Age Groups and Sex</h1>
     <!-- Container for the visualization -->
     <div id="vis"></div>
 
@@ -26,15 +26,19 @@
         $schema: 'https://vega.github.io/schema/vega-lite/v5.json',
         data: {'url':'https://data.cdc.gov/resource/9bhg-hcku.json'},
         transform: [
-          { filter: "datum.state != 'United States'" }
+          { filter: "datum.state != 'United States'" },
+          { filter: "datum.sex != 'All Sexes'" },
+          { filter: "datum.age_group != 'All Ages'" }
         ],
         "width": {"step": 21},
         mark: 'bar',
         encoding: {
           "column": {
-            "field": "age_group", "type": "ordinal", "spacing": 10,
+            "field": "age_group",
+            "type": "ordinal",
+            "spacing": 16,
             "header": {"orient": "bottom"},
-
+            "title": "Age Group"
           },
           x: {
             'field': 'sex',
@@ -42,7 +46,7 @@
           },
           "color": {
             "field": "sex",
-            "scale": {"range": ["#675193", "#0000ff", "#ff0080"]}
+            "scale": {"range": [ "#ff00a0", "#0050ff"]}
           },
           y: {
             aggregate: 'sum',
