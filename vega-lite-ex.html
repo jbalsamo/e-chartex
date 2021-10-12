@@ -17,6 +17,7 @@
   </head>
   <body>
     <h1>Covid-19 Deaths by Age Groups and Sex</h1>
+    <h2>for the period from 1/1/2020 to 10/6/2021</h2>
     <!-- Container for the visualization -->
     <div id="vis"></div>
 
@@ -28,14 +29,23 @@
         transform: [
           { filter: "datum.state != 'United States'" },
           { filter: "datum.sex != 'All Sexes'" },
-          { filter: "datum.age_group != 'All Ages'" }
+          { filter: "datum.age_group != 'All Ages'" },
+          { filter: "datum.age_group != 'Under 1 year'" },
+          { filter: "datum.age_group != '1-4 years'" },
+          { filter: "datum.age_group != '5-14 years'" },
+          { filter: "datum.age_group != '15-24 years'" },
+          { filter: "datum.age_group != '25-34 years'" },
+          { filter: "datum.age_group != '35-44 years'" },
+          { filter: "datum.age_group != '45-54 years'" },
+          { filter: "datum.age_group != '55-64 years'" }
         ],
-        "width": {"step": 21},
+        "width": {"step": 25},
         mark: 'bar',
         encoding: {
           "column": {
             "field": "age_group",
             "type": "ordinal",
+            'sort': ['0-17 years','18-29 years','0-17 years','18-29 years','30-39 years','40-49 years'],
             "spacing": 16,
             "header": {"orient": "bottom"},
             "title": "Age Group"
