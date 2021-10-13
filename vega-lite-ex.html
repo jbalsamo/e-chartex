@@ -16,7 +16,8 @@
     </style>
   </head>
   <body>
-    <h1>Template for Embedding Vega-Lite Visualization</h1>
+    <h1>Covid-19 Deaths by Age Groups and Sex</h1>
+    <h2>for the period from 1/1/2020 to 10/6/2021</h2>
     <!-- Container for the visualization -->
     <div id="vis"></div>
 
@@ -24,25 +25,52 @@
       // Assign the specification to a local variable vlSpec.
       var vlSpec = {
         $schema: 'https://vega.github.io/schema/vega-lite/v5.json',
-        'data': {'url':'https://data.cdc.gov/resource/saz5-9hgg.json'},
-        'transform': [
-          //{"filter": "datum.week_of_allocations == '2021-06-21T00:00:00.000'"},
-          {"calculate": "datum._1st_dose_allocations + datum._2nd_dose_allocations", as: "doses" }
+        data: {'url':'https://data.cdc.gov/resource/9bhg-hcku.json'},
+        transform: [
+          { filter: "datum.state != 'United States'" },
+          { filter: "datum.sex != 'All Sexes'" },
+          { filter: "datum.age_group != 'All Ages'" },
+          { filter: "datum.age_group != 'Under 1 year'" },
+          { filter: "datum.age_group != '1-4 years'" },
+          { filter: "datum.age_group != '5-14 years'" },
+          { filter: "datum.age_group != '15-24 years'" },
+          { filter: "datum.age_group != '25-34 years'" },
+          { filter: "datum.age_group != '35-44 years'" },
+          { filter: "datum.age_group != '45-54 years'" },
+          { filter: "datum.age_group != '55-64 years'" }
         ],
-        "width": {"step": 12},
-        'mark': 'bar',
-        'encoding': {
-          'x': {
-            'field': 'jurisdiction',
-            'title': "State"
+        "width": {"step": 25},
+        mark: 'bar',
+        encoding: {
+          "column": {
+            "field": "age_group",
+            "type": "ordinal",
+            'sort': ['0-17 years','18-29 years','0-17 years','18-29 years','30-39 years','40-49 years'],
+            "spacing": 16,
+            "header": {"orient": "bottom"},
+            "title": "Age Group"
           },
-          'y': {
-            'aggregate': 'sum',
-            'field': 'doses',
-            'title': 'Dose Allocations'
+          x: {
+            'field': 'sex',
+            'axis': null
+          },
+          "color": {
+            "field": "sex",
+            "scale": {"range": [ "#ff00a0", "#0050ff"]}
+          },
+          y: {
+            aggregate: 'sum',
+            field: 'covid_19_deaths',
+            'title': 'Covid Deaths',
+            'type': 'quantitative',
+            "axis": {"grid": false}
           }
-        }
-      };
+        },
+      "config": {
+        "view": {"stroke": "transparent"},
+        "axis": {"domainWidth": 3}
+      }
+    };
 
       // Embed the visualization in the container with id `vis`
       vegaEmbed('#vis', vlSpec);
