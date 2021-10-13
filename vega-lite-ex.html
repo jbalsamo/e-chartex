@@ -24,16 +24,21 @@
       // Assign the specification to a local variable vlSpec.
       var vlSpec = {
         $schema: 'https://vega.github.io/schema/vega-lite/v5.json',
-        data: {'url':'https://data.cdc.gov/resource/saz5-9hgg.json'},
-        mark: 'bar',
-        encoding: {
-          x: {
+        'data': {'url':'https://data.cdc.gov/resource/saz5-9hgg.json'},
+        'transform': [
+          //{"filter": "datum.week_of_allocations == '2021-06-21T00:00:00.000'"},
+          {"calculate": "datum._1st_dose_allocations + datum._2nd_dose_allocations", as: "doses" }
+        ],
+        "width": {"step": 12},
+        'mark': 'bar',
+        'encoding': {
+          'x': {
             'field': 'jurisdiction',
-            'title': 'State'
+            'title': "State"
           },
-          y: {
-            aggregate: 'sum',
-            field: '_1st_dose_allocations',
+          'y': {
+            'aggregate': 'sum',
+            'field': 'doses',
             'title': 'Dose Allocations'
           }
         }
