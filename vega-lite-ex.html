@@ -81,74 +81,31 @@
             },
           },
           {
-            "width": {"step": 30},
-            mark: 'bar',
+            'mark':'arc',
             encoding: {
-              "column": {
-                "field": "age_group",
-                "type": "ordinal",
-                'sort': xCategories,
-                "spacing": 16,
-                "header": {"orient": "bottom"},
-                "title": "Age Group"
-              },
-              x: {
-                'field': 'sex',
-                'axis': null
-              },
-              "color": {
-                "field": "sex",
-                "scale": {"range": [ "#ff00a0", "#0050ff"]}
-              },
-              y: {
-                aggregate: 'sum',
-                field: 'covid_19_deaths',
-                'title': 'Covid Deaths',
+              'theta': {
+                'field': 'covid_19_deaths',
                 'type': 'quantitative',
-                "axis": {"grid": false}
+                'aggregate': 'sum',
+                'stack': true
               },
-              "tooltip": [
+              'color': {
+                'field': 'sex',
+                'type': 'nominal'
+              },
+              "layer": [
                 {
-                  "field": "sex",
-                  "type": "ordinal",
-                  "title": "Sex"
+                  "mark": {"type": "arc", "outerRadius": 80}
                 },
                 {
-                  "field": "covid_19_deaths",
-                  "type": "quantitative",
-                  "title": "Deaths"
+                  "mark": {"type": "text", "radius": 90},
+                  "encoding": {
+                    "text": {"field": "sex", "type": "nominal"}
+                  }
                 }
               ]
-            },
-            "config": {
-              "view": {"stroke": "transparent"},
-              "axis": {"domainWidth": 3}
-            },
-          },
-          // {
-          //   encoding: {
-          //     'mark':'arc',
-          //     'theta': {
-          //       'field': 'covid_19_deaths',
-          //       'type': 'quantitative'
-          //     },
-          //     'color': {
-          //       'field': 'sex',
-          //       'type': 'nominal'
-          //     },
-          //     "layer": [
-          //       {
-          //         "mark": {"type": "arc", "outerRadius": 80}
-          //       },
-          //       {
-          //         "mark": {"type": "text", "radius": 90},
-          //         "encoding": {
-          //           "text": {"field": "sex", "type": "ordinal"}
-          //         }
-          //       }
-          //     ]
-          //   }
-          // }
+            }
+          }
         ]
 
     };
