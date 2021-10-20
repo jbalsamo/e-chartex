@@ -1,7 +1,7 @@
 <!DOCTYPE html>
 <html>
   <head>
-    <title>Vega-Lite Bar Chart</title>
+    <title>Covid Deaths Vega-lite Example</title>
     <meta charset="utf-8" />
 
     <script src="https://cdn.jsdelivr.net/npm/vega@5.20.2"></script>
@@ -13,11 +13,20 @@
       .vega-actions a {
         margin-right: 5px;
       }
+      h1 {
+        font-weight: bold;
+        text-align: center;
+      }
+      h2 {
+        font-weight: bold;
+        text-align: center;
+      }
     </style>
   </head>
   <body>
-    <h1>Covid-19 Deaths by Age Groups and Sex</h1>
+    <h1>Covid-19 Deaths</h1>
     <h2>for the period from 1/1/2020 to 10/6/2021</h2>
+    <hr
     <!-- Container for the visualization -->
     <div id="vis"></div>
     <div id="vis2"></div>
@@ -36,6 +45,12 @@
         ],
         'vconcat': [
           {
+            'title': {
+              'text':'Deaths by Age Group and Sex',
+              'align': 'center',
+              'anchor':'middle-top',
+              'fontSize': 14
+            },
             "width": {"step": 30},
             mark: 'bar',
             encoding: {
@@ -81,6 +96,12 @@
             },
           },
           {
+            'title': {
+              'text':'Total Percentage by Gender',
+              'align': 'center',
+              'anchor':'middle-top',
+              'fontSize': 14
+            },
             'mark':'arc',
             encoding: {
               'theta': {
@@ -92,7 +113,20 @@
               'color': {
                 'field': 'sex',
                 'type': 'nominal'
-              }
+              },
+              "tooltip": [
+                {
+                  "field": "sex",
+                  "type": "ordinal",
+                  "title": "Sex"
+                },
+                {
+                  "field": "covid_19_deaths",
+                  "type": "quantitative",
+                  'aggregate': 'sum',
+                  "title": "Deaths"
+                }
+              ]
             },
             "layer": [
               {
