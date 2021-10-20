@@ -7,7 +7,6 @@ This repository is a place for all tests and development of chart libraries. The
 * [dc.js](https://dc-js.github.io/dc.js/)
 
 Todos:
-
 - [X] Test Apache ECharts.
   - [X] Add interactivity.
   - [X] Add Multiple graphs.
