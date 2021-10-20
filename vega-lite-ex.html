@@ -92,22 +92,21 @@
               'color': {
                 'field': 'sex',
                 'type': 'nominal'
+              }
+            },
+            "layer": [
+              {
+                "mark": {"type": "arc", "outerRadius": 80, 'stroke': '#000000'}
               },
-              "layer": [
-                {
-                  "mark": {"type": "arc", "outerRadius": 200, 'stroke': '#000000'}
-                },
-                {
-                  "mark": {"type": "text", "radius": 220},
-                  "encoding": {
-                    "text": {"field": "sex", "type": "nominal"}
-                  }
+              {
+                "mark": {"type": "text", "radius": 100},
+                "encoding": {
+                  "text": {"field": "sex", "type": "nominal"}
                 }
-              ]
-            }
+              }
+            ]
           }
         ]
-
     };
 
       // Embed the visualization in the container with id `vis`
