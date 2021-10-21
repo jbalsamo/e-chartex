@@ -3,10 +3,13 @@
   <head>
     <title>Covid Deaths Vega-lite Example</title>
     <meta charset="utf-8" />
+    <link rel="stylesheet" type="text/css" href="https://cdn.datatables.net/1.11.3/css/jquery.dataTables.css">
 
     <script src="https://cdn.jsdelivr.net/npm/vega@5.20.2"></script>
     <script src="https://cdn.jsdelivr.net/npm/vega-lite@5.1.1"></script>
     <script src="https://cdn.jsdelivr.net/npm/vega-embed@6.18.2"></script>
+    <script src="https://code.jquery.com/jquery-3.6.0.min.js" integrity="sha256-/xUj+3OJU5yExlq6GSYGSHk7tPXikynS7ogEvDej/m4=" crossorigin="anonymous"></script>
+    <script type="text/javascript" charset="utf8" src="https://cdn.datatables.net/1.11.3/js/jquery.dataTables.js"></script>
 
     <style media="screen">
       /* Add space between Vega-Embed links  */
@@ -29,7 +32,23 @@
     <hr
     <!-- Container for the visualization -->
     <div id="vis"></div>
-    <div id="vis2"></div>
+    <div id="mygrid">
+      <h2>Full Dataset Grid</h2>
+      <table id="myTable">
+        <thead>
+          <tr>
+            <th>State</th>
+            <th>Age Group</th>
+            <th>Deaths</th>
+            <th>Sex</th>
+          </tr>
+        </thead>
+        <tbody>
+          <tr>
+          </tr>
+        </tbody>
+      </table>
+    </div>
 
     <script>
       var xCategories = ['0-17 years','18-29 years','0-17 years','18-29 years','30-39 years','40-49 years','50-64 years','65-74 years','75-84 years','85 years and over'];
@@ -52,8 +71,8 @@
               'fontSize': 14
             },
             "width": {"step": 30},
-            mark: 'bar',
-            encoding: {
+            'mark': 'bar',
+            'encoding': {
               "column": {
                 "field": "age_group",
                 "type": "ordinal",
@@ -62,7 +81,7 @@
                 "header": {"orient": "bottom"},
                 "title": "Age Group"
               },
-              x: {
+              'x': {
                 'field': 'sex',
                 'axis': null
               },
@@ -70,9 +89,9 @@
                 "field": "sex",
                 "scale": {"range": [ "#ff00a0", "#0050ff"]}
               },
-              y: {
-                aggregate: 'sum',
-                field: 'covid_19_deaths',
+              'y': {
+                'aggregate': 'sum',
+                'field': 'covid_19_deaths',
                 'title': 'Covid Deaths',
                 'type': 'quantitative',
                 "axis": {"grid": false}
@@ -103,7 +122,7 @@
               'fontSize': 14
             },
             'mark':'arc',
-            encoding: {
+            'encoding': {
               'theta': {
                 'field': 'covid_19_deaths',
                 'type': 'quantitative',
@@ -143,8 +162,22 @@
         ]
     };
 
-      // Embed the visualization in the container with id `vis`
-      vegaEmbed('#vis', vlSpec);
+    // Embed the visualization in the container with id `vis`
+    vegaEmbed('#vis', vlSpec);
+
+    // Create the data table.
+    var mytable = $('#myTable').DataTable( {
+        'ajax': {
+          'url':'https://data.cdc.gov/resource/9bhg-hcku.json',
+          'dataSrc': ''
+        },
+        'columns': [
+          {'data': 'state'},
+          { 'data': 'age_group' },
+          { 'data': 'covid_19_deaths', 'defaultContent': 0},
+          { 'data': 'sex'}
+        ]
+    });
     </script>
   </body>
 </html>
