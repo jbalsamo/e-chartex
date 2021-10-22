@@ -51,49 +51,48 @@
     </div>
 
     <script>
-      var xCategories = ['0-17 years','18-29 years','0-17 years','18-29 years','30-39 years','40-49 years','50-64 years','65-74 years','75-84 years','85 years and over'];
+      var xCategories = ["0-17 years","18-29 years","0-17 years","18-29 years","30-39 years","40-49 years","50-64 years","65-74 years","75-84 years","85 years and over"];
       // Assign the specification to a local variable vlSpec.
       var vlSpec = {
-        $schema: 'https://vega.github.io/schema/vega-lite/v5.1.1.json',
-        data: {'url':'https://data.cdc.gov/resource/9bhg-hcku.json'},
-        transform: [
-          { filter: "datum.state != 'United States'" },
-          { filter: "datum.sex != 'All Sexes'" },
-          { filter: "datum.age_group != 'All Ages'" },
-          { filter: {'field': 'age_group', 'oneOf': xCategories }}
+        "$schema": "https://vega.github.io/schema/vega-lite/v5.1.1.json",
+        "data": {"url":"https://data.cdc.gov/resource/9bhg-hcku.json"},
+        "transform": [
+          { "filter": "datum.state != 'United States'" },
+          { "filter": "datum.sex != 'All Sexes'" },
+          { "filter": {"field": "age_group", "oneOf": xCategories }}
         ],
-        'vconcat': [
+        "vconcat": [
           {
-            'title': {
-              'text':'Deaths by Age Group and Sex',
-              'align': 'center',
-              'anchor':'middle-top',
-              'fontSize': 14
+            "title": {
+              "text":"Deaths by Age Group and Sex",
+              "align": "center",
+              "anchor":"middle-top",
+              "fontSize": 14
             },
             "width": {"step": 30},
-            'mark': 'bar',
-            'encoding': {
+            "mark": "bar",
+            "encoding": {
               "column": {
                 "field": "age_group",
                 "type": "ordinal",
-                'sort': xCategories,
+                "sort": xCategories,
                 "spacing": 16,
                 "header": {"orient": "bottom"},
                 "title": "Age Group"
               },
-              'x': {
-                'field': 'sex',
-                'axis': null
+              "x": {
+                "field": "sex",
+                "axis": null
               },
               "color": {
                 "field": "sex",
                 "scale": {"range": [ "#ff00a0", "#0050ff"]}
               },
-              'y': {
-                'aggregate': 'sum',
-                'field': 'covid_19_deaths',
-                'title': 'Covid Deaths',
-                'type': 'quantitative',
+              "y": {
+                "aggregate": "sum",
+                "field": "covid_19_deaths",
+                "title": "Covid Deaths",
+                "type": "quantitative",
                 "axis": {"grid": false}
               },
               "tooltip": [
@@ -115,23 +114,23 @@
             },
           },
           {
-            'title': {
-              'text':'Total Percentage by Gender',
-              'align': 'center',
-              'anchor':'middle-top',
-              'fontSize': 14
+            "title": {
+              "text":"Total Percentage by Gender",
+              "align": "center",
+              "anchor":"middle-top",
+              "fontSize": 14
             },
-            'mark':'arc',
-            'encoding': {
-              'theta': {
-                'field': 'covid_19_deaths',
-                'type': 'quantitative',
-                'aggregate': 'sum',
-                'stack': true
+            "mark":"arc",
+            "encoding": {
+              "theta": {
+                "field": "covid_19_deaths",
+                "type": "quantitative",
+                "aggregate": "sum",
+                "stack": true
               },
-              'color': {
-                'field': 'sex',
-                'type': 'nominal'
+              "color": {
+                "field": "sex",
+                "type": "nominal"
               },
               "tooltip": [
                 {
@@ -142,17 +141,17 @@
                 {
                   "field": "covid_19_deaths",
                   "type": "quantitative",
-                  'aggregate': 'sum',
+                  "aggregate": "sum",
                   "title": "Deaths"
                 }
               ]
             },
             "layer": [
               {
-                "mark": {"type": "arc", "outerRadius": 80, 'stroke': '#000000'}
+                "mark": {"type": "arc", "outerRadius": 200, "stroke": "#000000"}
               },
               {
-                "mark": {"type": "text", "radius": 100},
+                "mark": {"type": "text", "radius": 240},
                 "encoding": {
                   "text": {"field": "sex", "type": "nominal"}
                 }
@@ -163,21 +162,22 @@
     };
 
     // Embed the visualization in the container with id `vis`
-    vegaEmbed('#vis', vlSpec);
+    vegaEmbed("#vis", vlSpec);
 
     // Create the data table.
-    var mytable = $('#myTable').DataTable( {
-        'ajax': {
-          'url':'https://data.cdc.gov/resource/9bhg-hcku.json',
-          'dataSrc': ''
+    var mytable = $("#myTable").DataTable( {
+        "ajax": {
+          "url":"https://data.cdc.gov/resource/9bhg-hcku.json",
+          "dataSrc": ""
         },
-        'columns': [
-          {'data': 'state'},
-          { 'data': 'age_group' },
-          { 'data': 'covid_19_deaths', 'defaultContent': 0},
-          { 'data': 'sex'}
+        "columns": [
+          {"data": "state" },
+          { "data": "age_group" },
+          { "data": "covid_19_deaths", "defaultContent": 0 },
+          { "data": "sex" }
         ]
     });
+
     </script>
   </body>
 </html>
