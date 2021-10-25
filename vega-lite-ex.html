@@ -10,6 +10,7 @@
     <script src="https://cdn.jsdelivr.net/npm/vega-embed@6.18.2"></script>
     <script src="https://code.jquery.com/jquery-3.6.0.min.js" integrity="sha256-/xUj+3OJU5yExlq6GSYGSHk7tPXikynS7ogEvDej/m4=" crossorigin="anonymous"></script>
     <script type="text/javascript" charset="utf8" src="https://cdn.datatables.net/1.11.3/js/jquery.dataTables.js"></script>
+    <script src="https://cdn.jsdelivr.net/npm/jsonata/jsonata.min.js"></script>
 
     <style media="screen">
       /* Add space between Vega-Embed links  */
@@ -52,11 +53,25 @@
     </div>
 
     <script>
+      var jsonData = [];
+
+      async function fetchData(url) {
+        var response = await fetch(url);
+        var data = await response.json();
+        return data;
+      }
+
+      var data = fetchData("https://data.cdc.gov/resource/9bhg-hcku.json");
+      data.then(x=>{
+        jsonData.concat([],[...x]);
+      });
+
+      console.log(jsonData);
 
       var xCategories = ["0-17 years","18-29 years","0-17 years","18-29 years","30-39 years","40-49 years","50-64 years","65-74 years","75-84 years","85 years and over"];
       // Assign the specification to a local variable vlSpec.
       var vlSpec = {
-        "$schema": "https://vega.github.io/schema/vega-lite/v5.1.1.json",
+        "$schema": "https://vega.github.io/schema/vega-lite/v5.json",
         "data": {"url":"https://data.cdc.gov/resource/9bhg-hcku.json"},
         "transform": [
           { "filter": "datum.state != 'United States'" },
@@ -150,10 +165,10 @@
             },
             "layer": [
               {
-                "mark": {"type": "arc", "outerRadius": 200, "stroke": "#000000"}
+                "mark": {"type": "arc", "outerRadius": 80, "stroke": "#000000"}
               },
               {
-                "mark": {"type": "text", "radius": 240},
+                "mark": {"type": "text", "radius": 100},
                 "encoding": {
                   "text": {"field": "sex", "type": "nominal"}
                 }
@@ -164,7 +179,10 @@
     };
 
     // Embed the visualization in the container with id `vis`
-    vegaEmbed("#vis", vlSpec);
+    vegaEmbed("#vis", vlSpec).then(function(result) {
+    // Access the Vega view instance (https://vega.github.io/vega/docs/api/view/) as result.view
+    console.log('result', result);
+    }).catch(console.error);
 
     // Create the data table.
     var mytable = $("#myTable").DataTable( {
@@ -179,7 +197,6 @@
           { "data": "sex" }
         ]
     });
-
     </script>
   </body>
 </html>
