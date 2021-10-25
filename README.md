@@ -12,4 +12,5 @@ Todos:
   - [X] Add Multiple graphs.
 - [X] Test Vega-lite.
   - [ ] Add interactivity.
-  - [ ] Add Multiple graphs.
+  - [X] Add Multiple graphs.
+  - [X] Build data table.
