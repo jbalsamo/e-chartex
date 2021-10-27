@@ -10,7 +10,7 @@
     <script src="https://cdn.jsdelivr.net/npm/vega-embed@6.18.2"></script>
     <script src="https://code.jquery.com/jquery-3.6.0.min.js" integrity="sha256-/xUj+3OJU5yExlq6GSYGSHk7tPXikynS7ogEvDej/m4=" crossorigin="anonymous"></script>
     <script type="text/javascript" charset="utf8" src="https://cdn.datatables.net/1.11.3/js/jquery.dataTables.js"></script>
-    <script src="https://cdn.jsdelivr.net/npm/crossfilter2@1.5.4/crossfilter.min.js"></script>
+    <script src="https://cdn.jsdelivr.net/npm/jsonata/jsonata.min.js"></script>
 
     <style media="screen">
       /* Add space between Vega-Embed links  */
@@ -39,7 +39,6 @@
       <table id="myTable">
         <thead>
           <tr>
-            <th>State</th>
             <th>Age Group</th>
             <th>Deaths</th>
             <th>Sex</th>
@@ -66,37 +65,46 @@
         return jsonData;
       }
 
+      jsonataSpec = `
+      $filter(
+        $filter($[state="United States"]^(age_group)
+        .{
+            "age_group": age_group,
+            "sex": sex,
+            "covid_19_deaths":$.covid_19_deaths
+        },
+        function($v, $i, $a) {
+          $v.sex != "All Sexes"
+        }),
+            function($v,$i,$a) {
+                $v.age_group in ["0-17 years","18-29 years","30-39 years","40-49 years","50-64 years","65-74 years","75-84 years","85 years and over"]
+            }
+        )[{
+            "age_group": age_group,
+            "sex": sex,
+            "covid_19_deaths":$.covid_19_deaths
+        }]`;
       var data = fetchData("https://data.cdc.gov/resource/9bhg-hcku.json");
 
       data.then(x => {
-        var xCategories = ["0-17 years","18-29 years","0-17 years","18-29 years","30-39 years","40-49 years","50-64 years","65-74 years","75-84 years","85 years and over"];
-        var cfx = crossfilter(x);
+        var sex = ["Male","Female"];
+        var xCategories = ["0-17 years","18-29 years","30-39 years","40-49 years","50-64 years","65-74 years","75-84 years","85 years and over"];
+        var result = jsonata(jsonataSpec).evaluate(x);
         console.log(x);
-        console.log(cfx.all());
-        var ageGroupDim = cfx.dimension(function(d) {
-          return d.age_group;
-        });
-        ageGroupDim.filter(function(d) {
-          return xCategories.includes(d);
-        });
-        var ageGroupGroup = ageGroupDim.group().reduceSum(function(d) {
-          return d.covid_19_deaths*1;
-        });
-        console.log(xCategories.includes("0-17 years"));
-        console.log(ageGroupGroup.all());
+        console.log(result);
 
         // Assign the specification to a local variable vlSpec.
         var vlSpec = {
           "$schema": "https://vega.github.io/schema/vega-lite/v5.json",
           // "data": {"url":"https://data.cdc.gov/resource/9bhg-hcku.json"},
           "data": {
-            "values": cfx.all()
+            "values": result
           },
-          "transform": [
-            { "filter": "datum.state != 'United States'" },
-            { "filter": "datum.sex != 'All Sexes'" },
-            { "filter": {"field": "age_group", "oneOf": xCategories }}
-          ],
+          //"transform": [
+            //{ "filter": "datum.state != 'United States'" },
+            //{ "filter": "datum.sex != 'All Sexes'" },
+            //{ "filter": {"field": "age_group", "oneOf": xCategories }}
+          //],
           "vconcat": [
             {
               "title": {
@@ -105,7 +113,7 @@
                 "anchor":"middle-top",
                 "fontSize": 14
               },
-              "width": {"step": 30},
+              "width": {"step": 40},
               "mark": "bar",
               "encoding": {
                 "column": {
@@ -125,7 +133,6 @@
                   "scale": {"range": [ "#ff00a0", "#0050ff"]}
                 },
                 "y": {
-                  "aggregate": "sum",
                   "field": "covid_19_deaths",
                   "title": "Covid Deaths",
                   "type": "quantitative",
@@ -184,10 +191,10 @@
               },
               "layer": [
                 {
-                  "mark": {"type": "arc", "outerRadius": 80, "stroke": "#000000"}
+                  "mark": {"type": "arc", "outerRadius": 160, "stroke": "#000000"}
                 },
                 {
-                  "mark": {"type": "text", "radius": 100},
+                  "mark": {"type": "text", "radius": 200},
                   "encoding": {
                     "text": {"field": "sex", "type": "nominal"}
                   }
@@ -205,9 +212,8 @@
 
       // Create the data table.
       var mytable = $("#myTable").DataTable( {
-          "data": x,
+          "data": result,
           "columns": [
-            {"data": "state" },
             { "data": "age_group" },
             { "data": "covid_19_deaths", "defaultContent": 0 },
             { "data": "sex" }
