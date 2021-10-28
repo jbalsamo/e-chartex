@@ -28,7 +28,7 @@
     </style>
   </head>
   <body>
-    <h1>Covid-19 Deaths</h1>
+    <h1>Covid-19 period Deaths</h1>
     <h2>for the period from 1/1/2020 to 10/6/2021</h2>
     <hr
     <!-- Container for the visualization -->
@@ -66,24 +66,22 @@
       }
 
       jsonataSpec = `
-      $filter(
-        $filter($[state="United States"]^(age_group)
-        .{
-            "age_group": age_group,
-            "sex": sex,
-            "covid_19_deaths":$.covid_19_deaths
-        },
-        function($v, $i, $a) {
-          $v.sex != "All Sexes"
-        }),
-            function($v,$i,$a) {
-                $v.age_group in ["0-17 years","18-29 years","30-39 years","40-49 years","50-64 years","65-74 years","75-84 years","85 years and over"]
-            }
-        )[{
-            "age_group": age_group,
-            "sex": sex,
-            "covid_19_deaths":$.covid_19_deaths
-        }]`;
+      $
+      [state="United States"]
+      [sex in ["Male","Female"]]
+      [age_group in ["0-17 years","18-29 years","30-39 years","40-49 years",
+        "50-64 years","65-74 years","75-84 years","85 years and over"]]
+      ^(age_group)
+      .{
+          "age_group": age_group,
+          "sex": sex,
+          "covid_19_deaths": covid_19_deaths
+      }
+      [{
+          "age_group": age_group,
+          "sex": sex,
+          "covid_19_deaths": covid_19_deaths
+      }]`;
       var data = fetchData("https://data.cdc.gov/resource/9bhg-hcku.json");
 
       data.then(x => {
@@ -113,6 +111,7 @@
                 "anchor":"middle-top",
                 "fontSize": 14
               },
+              "height": 250,
               "width": {"step": 40},
               "mark": "bar",
               "encoding": {
