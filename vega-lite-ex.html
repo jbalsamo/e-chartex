@@ -114,6 +114,13 @@
               "height": 250,
               "width": {"step": 40},
               "mark": "bar",
+              "params": [
+                {
+                  "name": "highlight",
+                  "select": {"type": "point", "on": "mouseover"}
+                },
+                {"name": "select", "select": "point"}
+              ],
               "encoding": {
                 "column": {
                   "field": "age_group",
@@ -122,6 +129,25 @@
                   "spacing": 16,
                   "header": {"orient": "bottom"},
                   "title": "Age Group"
+                },
+                "strokeWidth": {
+                  "condition": [
+                    {
+                      "param": "select",
+                      "empty": false,
+                      "value": 2
+                    },
+                    {
+                      "param": "highlight",
+                      "empty": false,
+                      "value": 1
+                    }
+                  ],
+                  "value": 0
+                },
+                "fillOpacity": {
+                  "condition": {"param": "select", "value": 1},
+                  "value": 0.3
                 },
                 "x": {
                   "field": "sex",
@@ -163,6 +189,13 @@
                 "fontSize": 14
               },
               "mark":"arc",
+              "params": [
+                {
+                  "name": "highlight",
+                  "select": {"type": "point", "on": "mouseover"}
+                },
+                {"name": "select", "select": "point"}
+              ],
               "encoding": {
                 "theta": {
                   "field": "covid_19_deaths",
