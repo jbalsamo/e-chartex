@@ -28,12 +28,13 @@
 
 
         <div style='clear:both;'>
-            <table id="dc-data-table">
+            <table id="dc-data-table" style="border: 2px solid gray; align:center;padding: 50px;">
                 <thead>
                 <tr class="header">
                     <th>Day</th>
                     <th>TPS 200</th>
                     <th>TPS 302</th>
+                    <th>TPS 404</th>
                     <th>TPS Total</th>
                 </tr>
                 </thead>
@@ -91,7 +92,7 @@
                 .stack(status_404,"404")
                 .renderArea(true)
                 .x(d3.scaleTime().domain([minDate, maxDate]))
-                .brushOn(false)
+                .brushOn(true)
                 .legend(dc.legend().x(50).y(10).itemHeight(13).gap(5))
                 .yAxisLabel("Hits per day");
 
