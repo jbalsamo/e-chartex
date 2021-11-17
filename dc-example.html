@@ -85,7 +85,7 @@
 
             var hitslineChart  = dc.lineChart("#chart-line-hitsperday");
             hitslineChart
-                .width(500).height(200)
+                .width(500).height(300)
                 .dimension(dateDim)
                 .group(status_200,"200")
                 .stack(status_302,"302")
@@ -98,10 +98,10 @@
 
             var yearRingChart   = dc.pieChart("#chart-ring-year");
             yearRingChart
-                .width(150).height(150)
+                .width(250).height(250)
                 .dimension(yearDim)
                 .group(year_total)
-                .innerRadius(30);
+                .innerRadius(0);
 
             var datatable   = dc.dataTable("#dc-data-table");
             datatable
