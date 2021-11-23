@@ -42,6 +42,9 @@
         </div>
 
         <script>
+            var debug = true;
+            var xCategories = ["0-17 years","18-29 years","30-39 years","40-49 years","50-64 years","65-74 years","75-84 years","85 years and over"];
+
             //-----------------------------------------------------
             // Fetches the data from the server
             //-----------------------------------------------------
@@ -52,30 +55,81 @@
                 data.forEach(element => {
                 jsonData.push(element);
                 });
-                console.log(jsonData);
+                // console.log(jsonData);
                 return jsonData;
-            }
-
-            //-----------------------------------------------------
-            // Prints the data to the console.
-            //-----------------------------------------------------
-            function print_filter(filter) {
-                var f=eval(filter);
-                if (typeof(f.length) != "undefined") {}else{}
-                if (typeof(f.top) != "undefined") {f=f.top(Infinity);}else{}
-                if (typeof(f.dimension) != "undefined") {f=f.dimension(function(d) { return "";}).top(Infinity);}else{}
-                console.log(filter+"("+f.length+") = "+JSON.stringify(f).replace("[","[\n\t").replace(/}\,/g,"},\n\t").replace("]","\n]"));
             }
 
             var data = fetchData("https://data.cdc.gov/resource/9bhg-hcku.json");
             data
                 .then(x => {
+                    //-----------------------------------------------------
+                    // Prints the data to the console.
+                    //-----------------------------------------------------
+                    function print_filter(filter) {
+                        var f=eval(filter);
+                        if (typeof(f.length) != "undefined") {}else{}
+                        if (typeof(f.top) != "undefined") {f=f.top(Infinity);}else{}
+                        if (typeof(f.dimension) != "undefined") {f=f.dimension(function(d) { return "";}).top(Infinity);}else{}
+                        console.log(filter+"("+f.length+") = "+JSON.stringify(f).replace("[","[\n\t").replace(/}\,/g,"},\n\t").replace("]","\n]"));
+                    }
+
                     var ndx = crossfilter(x);
                     var sexDim = ndx.dimension((d) => (d.sex));
-                    print_filter(sexDim);
-                })
+                    var stateDim = ndx.dimension((d) => (d.state));
+                    var filteredStateDim = ndx.dimension((d) => (d.state));
+                    var state50 = filteredStateDim.filter((d) => {return(d != "United States")});
+                    var sexMF = filteredStateDim.filter((d) => (d != "All Sexes"));
+                    var agFil = filteredStateDim.filter((v) => (xCategories.includes(v)));
+                    if (debug) print_filter("sexMF");
+                    var covidDeaths = filteredStateDim.group().reduceSum((d) => (d.covid_19_deaths ?? 0));
+                    if (debug) print_filter("covidDeaths");
+                    var pneuDeaths = filteredStateDim.group().reduceSum((d) => (d.pneumonia_deaths ?? 0));
+                    var fluDeaths = filteredStateDim.group().reduceSum((d) => (d.influenza_deaths ?? 0));
+                    // var agDim = ndx.dimension((d) => (d.age_group));
+                    // // if (debug) print_filter(sexMF);
+                    // var agValid = agDim.filter((v) => (xCategories.includes(v)));
+                    // //if (debug) print_filter("agValid");
+                    // var topStates = covidDeaths.top(50);
+                    // // if (debug) print_filter("covidDeaths");
+                    // var pneuDeaths = sexDim.group((d) => (d.state != "United States")).reduceSum((d) => (d.pneumonia_deaths ?? 0));
+                    // // if (debug) print_filter("pneuDeaths");
+                    // var fluDeaths = stateDim.group().reduceSum((d) => (d.influenza_deaths ?? 0));
+                    // if (debug) print_filter("fluDeaths");
+                    var deathsLineChart = dc.lineChart("#chart-line-deaths");
 
-            // var parseDate = d3.timeParse("%m/%d/%Y");
+                    deathsLineChart
+                        .width(900)
+                        .height(300)
+                        .dimension(stateDim)
+                        .group(covidDeaths)
+                        .stack(pneuDeaths)
+                        .stack(fluDeaths)
+                        .renderArea(true)
+                        .x(d3.scaleBand())
+                        .xUnits(dc.units.ordinal)
+                        .xAxisLabel("States")
+                        .yAxisLabel("Deaths")
+                        .renderHorizontalGridLines(true)
+                        .renderVerticalGridLines(true)
+                        .brushOn(false)
+                        .renderTitle(true)
+                        .title(function(d) {
+                            return "State: " + d.key + "\n" + "Deaths: " + d.value;
+                        })
+                        .elasticY(true)
+                        .elasticX(true)
+                        .yAxis().ticks(5);
+                    deathsLineChart.renderlet(function (chart) {
+                        // rotate x-axis labels
+                        chart.selectAll('g.x text')
+                            .attr('transform', 'translate(-10,10) rotate(-45)');
+                        chart.selectAll('g.x text.x-axis-label')
+                            .attr('transform', 'translate(50,-50) ');
+                    });
+                    deathsLineChart.render();
+                });
+
+            // var parseDate = d3.timeParse("%m/%d/%Y);
             // data.forEach(function(d) {
             //     d.date = parseDate(d.date);
             //     d.total= d.http_404+d.http_200+d.http_302;
