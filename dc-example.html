@@ -82,18 +82,18 @@
             }
 
             var data = [
-                {date: "12/27/2012", http_404: 22, http_200: 190, http_302: 100},
-                {date: "12/28/2012", http_404: 2, http_200: 10, http_302: 100},
-                {date: "12/29/2012", http_404: 31, http_200: 300, http_302: 100},
-                {date: "12/30/2012", http_404: 2, http_200: 90, http_302: 0},
-                {date: "12/31/2012", http_404: 25, http_200: 90, http_302: 0},
-                {date: "01/01/2013", http_404: 2, http_200: 90, http_302: 0},
-                {date: "01/02/2013", http_404: 71, http_200: 10, http_302: 1},
-                {date: "01/03/2013", http_404: 12, http_200: 90, http_302: 0},
-                {date: "01/04/2013", http_404: 2, http_200: 90, http_302: 0},
-                {date: "01/05/2013", http_404: 2, http_200: 90, http_302: 0},
-                {date: "01/06/2013", http_404: 42, http_200: 200, http_302: 1},
-                {date: "01/07/2013", http_404: 1, http_200: 200, http_302: 100}
+                {'date': "12/27/2012", 'http_404': 22, 'http_200': 190, 'http_302': 100},
+                {'date': "12/28/2012", 'http_404': 2, 'http_200': 10, 'http_302': 100},
+                {'date': "12/29/2012", 'http_404': 31, 'http_200': 300, 'http_302': 100},
+                {'date': "12/30/2012", 'http_404': 2, 'http_200': 90, 'http_302': 0},
+                {'date': "12/31/2012", 'http_404': 25, 'http_200': 90, 'http_302': 0},
+                {'date': "01/01/2013", 'http_404': 2, 'http_200': 90, 'http_302': 0},
+                {'date': "01/02/2013", 'http_404': 71, 'http_200': 10, 'http_302': 1},
+                {'date': "01/03/2013", 'http_404': 12, 'http_200': 90, 'http_302': 0},
+                {'date': "01/04/2013", 'http_404': 2, 'http_200': 90, 'http_302': 0},
+                {'date': "01/05/2013", 'http_404': 2, 'http_200': 90, 'http_302': 0},
+                {'date': "01/06/2013", 'http_404': 42, 'http_200': 200, 'http_302': 1},
+                {'date': "01/07/2013", 'http_404': 1, 'http_200': 200, 'http_302': 100}
             ];
 
             var ndx = crossfilter(data);
@@ -104,28 +104,31 @@
                 d.Year=d.date.getFullYear();
             });
             print_filter("data");
-            var yearDim  = ndx.dimension(function(d) {return +d.Year;});
+            var yearDim  = ndx.dimension(function(d) {return d.Year;});
             var year_total = yearDim.group().reduceSum(function(d) {return d.total;});
             var dateDim = ndx.dimension(function(d) {return d.date;});
-            var hits = dateDim.group().reduceSum(dc.pluck('total'));
+            var hits = dateDim.group().reduceSum(dc.pluck('total'));1
             var minDate = dateDim.bottom(1)[0].date;
             var maxDate = dateDim.top(1)[0].date;
             var status_200=dateDim.group().reduceSum(function(d) {return d.http_200;});
             var status_302=dateDim.group().reduceSum(function(d) {return d.http_302;});
             var status_404=dateDim.group().reduceSum(function(d) {return d.http_404;});
+            print_filter("data");
+            console.log([minDate,maxDate]);
 
             var hitslineChart  = dc.lineChart("#chart-line-hitsperday");
-            hitslineChart
-                .width(500).height(300)
-                .dimension(dateDim)
+            hitslineChart.width(500)
+            hitslineChart.height(300)
+            hitslineChart.dimension(dateDim)
                 .group(status_200,"200")
                 .stack(status_302,"302")
                 .stack(status_404,"404")
                 .renderArea(true)
                 .x(d3.scaleTime().domain([minDate, maxDate]))
                 .brushOn(true)
-                .legend(dc.legend().x(50).y(10).itemHeight(13).gap(5))
-                .yAxisLabel("Hits per day");
+                .legend(dc.legend().x(50).y(10).itemHeight(13).gap(5));
+
+            hitslineChart.yAxisLabel("Hits per day");
 
             var yearRingChart   = dc.pieChart("#chart-ring-year");
             yearRingChart
