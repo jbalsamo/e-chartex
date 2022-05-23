@@ -3,5 +3,6 @@
         "jsonata",
         "mydata",
         "vconcat"
-    ]
+    ],
+    "liveServer.settings.port": 5501
 }
